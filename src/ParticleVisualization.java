@@ -5,17 +5,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class ParticleVisualization extends JPanel {
     private static final int WIDTH = 1400;
+    private final int particlesPerFrame = 5;
     private static final int HEIGHT = 1000;
-    private static final Vector3 GRAVITY = new Vector3(0,1,0);
+    private static final Vector3 GRAVITY = new Vector3(0,-1,0);
     private int total = 100;  // Adjust the number of particles as needed
     private ArrayList<Particle> particleList = new ArrayList<>();
 
     public ParticleVisualization() {
         for (int i = 0; i < total; i++) {
-            Particle p = new Particle(new Vector3((float) WIDTH /2, (float) HEIGHT /2, 0));
+            Particle p = new Particle(new Vector3((float) WIDTH /2, (float) HEIGHT, 0));
             applyExternalForces(p,GRAVITY);
             particleList.add(p);
         }
@@ -35,6 +37,15 @@ public class ParticleVisualization extends JPanel {
         // Gravity affects the particle by adding it to the y-component of acceleration
         particle.acceleration.add(external);
     }
+    private void createNewParticle() {
+        for (int i = 0; i < particlesPerFrame; i++) {
+            Random rand = new Random();
+            float random = rand.nextFloat(WIDTH);
+            Particle p = new Particle(new Vector3((float) random, (float) HEIGHT, 0));
+            applyExternalForces(p, GRAVITY);
+            particleList.add(p);
+        }
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -42,7 +53,7 @@ public class ParticleVisualization extends JPanel {
         for (Particle particle : particleList) {
             Color particleColor = particle.calculateColor();
             g.setColor(particleColor);
-            g.fillOval((int) particle.getPosition().getX(), (int) particle.getPosition().getY(), 10, 10);
+            g.fillOval((int) particle.getPosition().getX(), (int) particle.getPosition().getY(), 5, 5);
         }
     }
 
@@ -57,6 +68,7 @@ public class ParticleVisualization extends JPanel {
 
             Timer timer = new Timer(16, e -> {
                 particleVisualization.updateParticles();
+                particleVisualization.createNewParticle();
                 particleVisualization.repaint();
             });
             timer.start();

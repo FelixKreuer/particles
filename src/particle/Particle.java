@@ -6,12 +6,12 @@ import java.awt.*;
 import java.util.Random;
 
 public class Particle {
-    private final int maxVelocity = 10;
+    private final int maxVelocity = 50;
     public Vector3 position;
     public Vector3 velocity;
     public Vector3 acceleration;
 
-    private static final int LIFESPAN = 240;
+    private static final int LIFESPAN = 120;
     private int lifespan;
     private Color color;
 
@@ -53,15 +53,17 @@ public class Particle {
     }
 
     public Color calculateColor() {
-        int r = map(velocity.getX(), -10, 10, 0, 255);
-        int g = map(velocity.getY(), -10, 10, 0, 255);
-        int b = map(velocity.getZ(), -10, 10, 0, 255);
+        int r = map(velocity.getX(), -MAX_INITIAL_VELOCITY, MAX_INITIAL_VELOCITY, 0, 255);
+        int g = map(velocity.getY(), -maxVelocity, maxVelocity, 0, 255);
+        int b = map(velocity.getZ(), -MAX_INITIAL_VELOCITY, MAX_INITIAL_VELOCITY, 0, 255);
         int a = map(lifespan, 0, LIFESPAN, 0, 255);
         return new Color(r, g, b, a);
     }
 
     public void updateParticle() {
-        velocity.add(acceleration);
+        if(velocity.magnitude() < maxVelocity - 5){
+            velocity.add(acceleration);
+        }
         position.add(velocity);
         lifespan--;
     }

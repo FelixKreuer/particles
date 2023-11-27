@@ -89,5 +89,7 @@ public class Vector3{
         this.y *= that;
         this.z *= that;
     }
-
+    public float magnitude(){
+        return (float) Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
 }
